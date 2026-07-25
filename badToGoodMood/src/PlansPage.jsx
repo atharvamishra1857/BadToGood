@@ -6,8 +6,8 @@ const ACTIVITIES = [
   { emoji: "🍕", label: "Dinner" },
   { emoji: "🎬", label: "Movie night" },
   { emoji: "🌿", label: "Walk outside" },
-  { emoji: "🎮", label: "Game night" },
-  { emoji: "☕", label: "Cafe date" },
+  { emoji: "🍵", label: "Cafe Date" },
+  { emoji: "☕", label: "Breakfast" },
   { emoji: "🛍️", label: "Shopping" },
   { emoji: "🎨", label: "Creative day" },
   { emoji: "✨", label: "Surprise me" },
@@ -118,7 +118,7 @@ export default function PlansPage({ onNavigate }) {
                 />
                 {error && <p className="text-red-400 text-sm text-center">{error}</p>}
                 <button
-                  onClick={() => { if (!form.created_by.trim()) { setError("Tell us your name 🌸"); return; } next(); }}
+                  onClick={() => { if (!form.created_by.trim()) { setError("Taki Pata chale kon bana raha hai plan 🌸"); return; } next(); }}
                   className="w-full bg-pink-400 hover:bg-pink-500 text-white font-bold py-3 rounded-2xl transition"
                 >
                   Next →
@@ -132,7 +132,7 @@ export default function PlansPage({ onNavigate }) {
                 <div className="text-center">
                   <span className="text-4xl">💕</span>
                   <h2 className="text-2xl font-bold text-pink-400 mt-2">What are we doing?</h2>
-                  <p className="text-pink-300 text-sm mt-1">Pick one or type your own</p>
+                  <p className="text-pink-300 text-sm mt-1">Kuch aur crazzyy bhi kar sakte hai!</p>
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   {ACTIVITIES.map((a) => (
@@ -159,7 +159,7 @@ export default function PlansPage({ onNavigate }) {
                 <div className="flex gap-3">
                   <button onClick={back} className="flex-1 border border-pink-200 text-pink-300 font-semibold py-3 rounded-2xl hover:bg-pink-50 transition">← Back</button>
                   <button
-                    onClick={() => { if (!form.activity.trim()) { setError("Pick something to do 💕"); return; } next(); }}
+                    onClick={() => { if (!form.activity.trim()) { setError("Kuch toh choose kar lo💕"); return; } next(); }}
                     className="flex-1 bg-pink-400 hover:bg-pink-500 text-white font-bold py-3 rounded-2xl transition"
                   >
                     Next →
