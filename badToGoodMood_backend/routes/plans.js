@@ -1,42 +1,52 @@
 const express = require("express");
 const router = express.Router();
-const db = require("../db/database");
+const pool = require("../db/database");
 
-router.get("/", (req, res) => {
-  db.all("SELECT * FROM plans ORDER BY date ASC", [], (err, rows) => {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json(rows);
-  });
+// GET all plans
+router.get("/", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT * FROM plans ORDER BY date ASC");
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
-router.post("/", (req, res) => {
+// POST a new plan
+router.post("/", async (req, res) => {
   const { date, time, activity, created_by } = req.body;
   if (!date || !time || !activity)
     return res.status(400).json({ error: "date, time, and activity are required" });
-
-  db.run(
-    "INSERT INTO plans (date, time, activity, created_by) VALUES (?, ?, ?, ?)",
-    [date, time, activity, created_by],
-    function (err) {          // must be function(), not arrow fn — 'this' gives lastID
-      if (err) return res.status(500).json({ error: err.message });
-      res.status(201).json({ id: this.lastID });
-    }
-  );
+  try {
+    const result = await pool.query(
+      "INSERT INTO plans (date, time, activity, created_by) VALUES ($1, $2, $3, $4) RETURNING id",
+      [date, time, activity, created_by]
+    );
+    res.status(201).json({ id: result.rows[0].id });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
-router.patch("/:id", (req, res) => {
+// PATCH status
+router.patch("/:id", async (req, res) => {
   const { status } = req.body;
-  db.run("UPDATE plans SET status = ? WHERE id = ?", [status, req.params.id], (err) => {
-    if (err) return res.status(500).json({ error: err.message });
+  try {
+    await pool.query("UPDATE plans SET status = $1 WHERE id = $2", [status, req.params.id]);
     res.json({ success: true });
-  });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
-router.delete("/:id", (req, res) => {
-  db.run("DELETE FROM plans WHERE id = ?", [req.params.id], (err) => {
-    if (err) return res.status(500).json({ error: err.message });
+// DELETE a plan
+router.delete("/:id", async (req, res) => {
+  try {
+    await pool.query("DELETE FROM plans WHERE id = $1", [req.params.id]);
     res.json({ success: true });
-  });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 module.exports = router;
